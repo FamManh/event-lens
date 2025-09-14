@@ -1,4 +1,5 @@
 import { resolve } from 'node:path';
+import { copyFile, mkdir } from 'node:fs/promises';
 import { makeEntryPointPlugin } from '@extension/hmr';
 import { getContentScriptEntries, withPageConfig } from '@extension/vite-config';
 import { IS_DEV } from '@extension/env';
@@ -37,3 +38,15 @@ const builds = configs.map(async config => {
 });
 
 await Promise.all(builds);
+
+// Copy event-monitor.js to dist directory
+const eventMonitorSrc = resolve(matchesDir, 'all', 'event-monitor.js');
+const eventMonitorDest = resolve(rootDir, '..', '..', 'dist', 'event-monitor.js');
+
+try {
+  await mkdir(resolve(rootDir, '..', '..', 'dist'), { recursive: true });
+  await copyFile(eventMonitorSrc, eventMonitorDest);
+  console.log('Copied event-monitor.js to dist directory');
+} catch (error) {
+  console.error('Failed to copy event-monitor.js:', error);
+}

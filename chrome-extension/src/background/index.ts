@@ -3,8 +3,6 @@
 
 import 'webextension-polyfill';
 
-console.log('[Event Watcher] Background script loaded');
-
 // Ring buffer to store the last 2000 events
 const MAX_EVENTS = 2000;
 const eventBuffer: any[] = [];
@@ -15,11 +13,13 @@ const devtoolsConnections = new Set<chrome.runtime.Port>();
 
 // Add event to ring buffer
 function addEvent(eventData: any) {
-  eventBuffer.push({
+  const eventWithId = {
     ...eventData,
     id: ++eventId,
     timestamp: Date.now(),
-  });
+  };
+
+  eventBuffer.push(eventWithId);
 
   // Maintain ring buffer size
   if (eventBuffer.length > MAX_EVENTS) {
@@ -29,7 +29,7 @@ function addEvent(eventData: any) {
   // Send to all connected DevTools panels
   const message = {
     type: 'EVENT_WATCHER_NEW_EVENT',
-    data: eventData,
+    data: eventWithId,
   };
 
   devtoolsConnections.forEach(port => {
@@ -53,7 +53,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Handle DevTools panel connections
 chrome.runtime.onConnect.addListener(port => {
   if (port.name === 'event-watcher-devtools') {
-    console.log('[Event Watcher] DevTools panel connected');
     devtoolsConnections.add(port);
 
     // Send existing events to the newly connected panel

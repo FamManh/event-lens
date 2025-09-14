@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Watcher Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .form-group {
+            margin: 10px 0;
+        }
+        input, select {
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .event-log {
+            background-color: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Event Watcher Test Page</h1>
+    <p>This page is designed to test the Event Watcher Chrome extension. Open Chrome DevTools and go to the "Event Watcher" tab to see captured events.</p>
+
+    <div class="test-section">
+        <h2>Basic CustomEvent Tests</h2>
+        <button onclick="testBasicEvent()">Test Basic Event</button>
+        <button onclick="testEventWithData()">Test Event with Data</button>
+        <button onclick="testEventWithComplexData()">Test Event with Complex Data</button>
+        <button onclick="testEventWithCircularReference()">Test Event with Circular Reference</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Form Events</h2>
+        <div class="form-group">
+            <input type="text" id="username" placeholder="Username" onchange="dispatchFormEvent('username-changed', this.value)">
+        </div>
+        <div class="form-group">
+            <select id="country" onchange="dispatchFormEvent('country-changed', this.value)">
+                <option value="">Select Country</option>
+                <option value="us">United States</option>
+                <option value="uk">United Kingdom</option>
+                <option value="ca">Canada</option>
+            </select>
+        </div>
+        <button onclick="dispatchFormEvent('form-submitted', {username: document.getElementById('username').value, country: document.getElementById('country').value})">
+            Submit Form
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>User Action Events</h2>
+        <button onclick="dispatchUserEvent('user-login', {userId: 123, timestamp: Date.now()})">User Login</button>
+        <button onclick="dispatchUserEvent('user-logout', {userId: 123})">User Logout</button>
+        <button onclick="dispatchUserEvent('button-clicked', {buttonId: 'test-button', coordinates: {x: 100, y: 200}})">
+            Button Clicked
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>Application State Events</h2>
+        <button onclick="dispatchStateEvent('app.initialized', {version: '1.0.0', features: ['auth', 'dashboard']})">
+            App Initialized
+        </button>
+        <button onclick="dispatchStateEvent('user.preferences-changed', {theme: 'dark', language: 'en'})">
+            Preferences Changed
+        </button>
+        <button onclick="dispatchStateEvent('data.loaded', {items: Array.from({length: 10}, (_, i) => ({id: i, name: `Item ${i}`}))})">
+            Data Loaded
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>Error Events</h2>
+        <button onclick="dispatchErrorEvent('api.error', {status: 404, message: 'Not Found', url: '/api/users/999'})">
+            API Error
+        </button>
+        <button onclick="dispatchErrorEvent('validation.error', {field: 'email', message: 'Invalid email format'})">
+            Validation Error
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>Performance Events</h2>
+        <button onclick="dispatchPerformanceEvent('page.loaded', {loadTime: 1250, resources: 15})">
+            Page Loaded
+        </button>
+        <button onclick="dispatchPerformanceEvent('component.rendered', {component: 'UserList', renderTime: 45})">
+            Component Rendered
+        </button>
+    </div>
+
+    <div class="test-section">
+        <h2>Bulk Event Test</h2>
+        <button onclick="dispatchBulkEvents()">Dispatch 10 Events Rapidly</button>
+        <button onclick="dispatchBulkEvents(50)">Dispatch 50 Events Rapidly</button>
+    </div>
+
+    <div class="test-section">
+        <h2>Event Log (for debugging)</h2>
+        <div id="eventLog" class="event-log"></div>
+        <button onclick="clearEventLog()">Clear Log</button>
+    </div>
+
+    <script>
+        let eventCounter = 0;
+
+        function logEvent(eventName, data) {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `[${timestamp}] ${eventName}: ${JSON.stringify(data)}\n`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function clearEventLog() {
+            document.getElementById('eventLog').innerHTML = '';
+        }
+
+        function dispatchEvent(eventName, detail, target = document) {
+            const event = new CustomEvent(eventName, { detail });
+            target.dispatchEvent(event);
+            logEvent(eventName, detail);
+        }
+
+        function testBasicEvent() {
+            dispatchEvent('test.basic', { message: 'Hello Event Watcher!' });
+        }
+
+        function testEventWithData() {
+            dispatchEvent('test.data', {
+                string: 'Hello World',
+                number: 42,
+                boolean: true,
+                array: [1, 2, 3],
+                object: { key: 'value' }
+            });
+        }
+
+        function testEventWithComplexData() {
+            dispatchEvent('test.complex', {
+                user: {
+                    id: 123,
+                    name: 'John Doe',
+                    email: 'john@example.com',
+                    preferences: {
+                        theme: 'dark',
+                        notifications: true,
+                        language: 'en'
+                    }
+                },
+                metadata: {
+                    timestamp: Date.now(),
+                    source: 'test-page',
+                    version: '1.0.0'
+                }
+            });
+        }
+
+        function testEventWithCircularReference() {
+            const obj = { name: 'test' };
+            obj.self = obj; // Create circular reference
+            dispatchEvent('test.circular', obj);
+        }
+
+        function dispatchFormEvent(eventName, data) {
+            dispatchEvent(`form.${eventName}`, data);
+        }
+
+        function dispatchUserEvent(eventName, data) {
+            dispatchEvent(`user.${eventName}`, data);
+        }
+
+        function dispatchStateEvent(eventName, data) {
+            dispatchEvent(`state.${eventName}`, data);
+        }
+
+        function dispatchErrorEvent(eventName, data) {
+            dispatchEvent(`error.${eventName}`, data);
+        }
+
+        function dispatchPerformanceEvent(eventName, data) {
+            dispatchEvent(`perf.${eventName}`, data);
+        }
+
+        function dispatchBulkEvents(count = 10) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    dispatchEvent('bulk.test', {
+                        index: i,
+                        timestamp: Date.now(),
+                        data: `Bulk event ${i}`
+                    });
+                }, i * 10); // Small delay between events
+            }
+        }
+
+        // Auto-dispatch some events on page load
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                dispatchEvent('page.loaded', {
+                    url: window.location.href,
+                    timestamp: Date.now(),
+                    userAgent: navigator.userAgent
+                });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
