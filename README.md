@@ -30,29 +30,30 @@
 
 ## Table of Contents
 
+- [Table of Contents](#table-of-contents)
 - [Intro](#intro)
 - [Features](#features)
-- [Structure](#structure)
-    - [ChromeExtension](#structure-chrome-extension)
-    - [Packages](#structure-packages)
-    - [Pages](#structure-pages)
 - [Installation](#installation)
-    - [Chrome](#installation-chrome)
-    - [Firefox](#installation-firefox)
-- [Install dependency](#install-dependency)
-    - [For root](#install-dependency-for-root)
-    - [For module](#install-dependency-for-module)
-- [Environment variables](#env-variables)
-    - [Add new](#env-variables-new)
-    - [Set via CLI](#env-variables-cli-set)
+  - [For Chrome: ](#for-chrome-)
+  - [For Firefox: ](#for-firefox-)
+- [Install dependency for turborepo: ](#install-dependency-for-turborepo-)
+  - [For root: ](#for-root-)
+  - [For module: ](#for-module-)
+- [How do I disable modules I'm not using?](#how-do-i-disable-modules-im-not-using)
+- [Environment variables](#environment-variables)
+- [Boilerplate structure ](#boilerplate-structure-)
+  - [Chrome extension ](#chrome-extension-)
+  - [Pages ](#pages-)
+  - [Packages ](#packages-)
 - [Troubleshooting](#troubleshooting)
-    - [Hot module reload seems to have frozen](#hot-module-reload-seems-to-have-frozen)
-    - [Imports not resolving correctly](#imports-not-resolving-correctly)
+  - [Hot module reload seems to have frozen](#hot-module-reload-seems-to-have-frozen)
+  - [Imports not resolving correctly](#imports-not-resolving-correctly)
 - [Community](#community)
 - [Debugging](#debugging)
 - [Reference](#reference)
-- [Star History](#star-history)
-- [Contributors](#contributors)
+- [Star History ](#star-history-)
+- [Contributors ](#contributors-)
+- [Special Thanks To](#special-thanks-to)
 
 ## Intro
 
@@ -269,7 +270,3 @@ This Boilerplate is made possible thanks to all of its contributors.
 
 | <a href="https://jb.gg/OpenSourceSupport"><img width="40" src="https://resources.jetbrains.com/storage/products/company/brand/logos/jb_beam.png" alt="JetBrains Logo (Main) logo."></a> | <a href="https://www.linkedin.com/in/j-acks0n"><img width="40" style="border-radius:50%" src='https://avatars.githubusercontent.com/u/23139754' alt='Jackson Hong'/></a> |
 |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-
----
-
-Made by [Jonghakseo](https://jonghakseo.github.io/)
